@@ -31,7 +31,7 @@ export default function HowWeOperatePage() {
       <main className="bg-secondary dark:bg-gray-900 overflow-hidden">
         <Navigation />
       {/* HERO SECTION */}
-      <section className="relative flex items-center pt-24 lg:pb-10 overflow-hidden">
+      <section className="relative flex items-center pt-24 pb-12 lg:pb-10 overflow-hidden">
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center relative z-10">
           {/* Left Side */}
           <motion.div
