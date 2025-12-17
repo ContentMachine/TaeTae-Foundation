@@ -1,53 +1,119 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { addRecord, getRecords } from "@/lib/db"
-import { sendEmail } from "@/lib/email"
-
-export async function GET() {
-  try {
-    const boys = await getRecords("boys")
-    return NextResponse.json(boys)
-  } catch (error) {
-    console.error(" Error fetching boys:", error)
-    return NextResponse.json({ error: "Failed to fetch boys" }, { status: 500 })
-  }
-}
+import { type NextRequest, NextResponse } from "next/server";
+import { addRecord, getRecords } from "@/lib/db";
+import { uploadToCloudinary } from "@/lib/cloudinary";
+import { sendBoyEnrollmentEmail, sendAdminBoyEnrollmentNotification } from "@/lib/email";
+import { toast } from 'react-toastify';  // Import the toast notification
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json()
+    const data = await request.json();
 
-    const boy = await addRecord("boys", {
-      ...data,
-      growthMetrics: {
-        skillsLevel: 1,
-        educationScore: 0,
-        athleticAbility: 0,
-        totalScore: 1,
-      },
-      sponsor: null,
-      joinedDate: new Date().toISOString(),
-    })
-
-    // ✅ Send notification email
-    if (boy.email) {
-      await sendEmail(
-        boy.email,
-        "Welcome to Tae tae Foundation Program",
-        `
-          <h2>Hello ${boy.fullName},</h2>
-          <p>Welcome to the Tae tae Foundation! 🎉</p>
-          <p>We’re excited to have you in the <b>${boy.program}</b> program.</p>
-          <p>Your journey toward growth and success starts now.</p>
-          <br/>
-          <p>Warm regards,</p>
-          <p><b>The Tae tae Foundation Team</b></p>
-        `
-      )
+    // Validate required fields
+    if (!data.first_name || !data.last_name || !data.date_of_birth || !data.program_track || !data.guardian_name || !data.guardian_signature) {
+      return NextResponse.json({ error: "Missing required fields or signature" }, { status: 400 });
     }
 
-    return NextResponse.json(boy)
+    // Calculate the age at enrollment
+    const birthDate = new Date(data.date_of_birth);
+    const today = new Date();
+    const ageAtEnrolment = Math.floor((today.getTime() - birthDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+
+    // Generate a unique boyId
+    const boyId = `BOY-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    // Handle profile photo upload if present
+    let profilePhotoUrl = data.profile_photo_url;
+    if (data.profile_photo_base64) {
+      const result = await uploadToCloudinary(data.profile_photo_base64, {
+        folder: `taetae/profiles/${boyId}`,
+        tags: ['profile', boyId, 'admin'],
+      });
+      profilePhotoUrl = result.secure_url;
+    }
+
+    // Handle guardian signature upload if present
+    let guardianSignatureUrl = "";
+    if (data.guardian_signature) {
+      const result = await uploadToCloudinary(data.guardian_signature, {
+        folder: `taetae/signatures/${boyId}`,
+        tags: ['signature', boyId, 'admin'],
+      });
+      guardianSignatureUrl = result.secure_url;
+    }
+
+    // Add boy record to database
+    const boy = await addRecord("boys", {
+      id: boyId,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      date_of_birth: data.date_of_birth,
+      age_at_enrolment: ageAtEnrolment,
+      program_start_date: data.program_start_date || new Date().toISOString(),
+      program_track: data.program_track,
+      school_name: data.school_name,
+      class_level: data.class_level,
+      guardian_name: data.guardian_name,
+      guardian_phone: data.guardian_phone,
+      guardian_email: data.guardian_email,
+      sponsor_name: data.sponsor_name,
+      address_city: data.address_city,
+      background: data.background,
+      goals: data.goals,
+      address_country: data.address_country,
+      emergency_contact: data.emergency_contact,
+      status: data.status || "active",
+      consent_form_signed: true, // Consent is implied by signature
+      profile_photo_url: profilePhotoUrl,
+      guardian_signature_url: guardianSignatureUrl, // Save signature URL
+      notes: data.notes,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+
+    console.log("👦 Boy enrolled:", boy);
+
+    // Send welcome email to guardian
+    if (data.guardian_email) {
+      await sendBoyEnrollmentEmail(boy, data.guardian_email);
+    }
+
+    // Notify admin about new enrollment
+    await sendAdminBoyEnrollmentNotification(boy);
+
+    return NextResponse.json({ success: true, boy, boyId });
   } catch (error) {
-    console.error(" Error creating boy profile:", error)
-    return NextResponse.json({ error: "Failed to create profile" }, { status: 500 })
+    console.error("❌ Boy enrollment error:", error);
+
+    return NextResponse.json({ error: "Failed to enroll boy" }, { status: 500 });
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get("status");
+    const programTrack = searchParams.get("programTrack");
+    const search = searchParams.get("search");
+
+    let boys = await getRecords("boys");
+
+    if (status) boys = boys.filter((b: any) => b.status === status);
+    if (programTrack) boys = boys.filter((b: any) => b.program_track === programTrack);
+    if (search) {
+      const searchLower = search.toLowerCase();
+      boys = boys.filter(
+        (b: any) =>
+          b.first_name.toLowerCase().includes(searchLower) ||
+          b.last_name.toLowerCase().includes(searchLower) ||
+          b.id.toLowerCase().includes(searchLower)
+      );
+    }
+
+    boys.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    return NextResponse.json({ boys, count: boys.length });
+  } catch (error) {
+    console.error("Error fetching boys:", error);
+    return NextResponse.json({ error: "Failed to fetch boys" }, { status: 500 });
   }
 }

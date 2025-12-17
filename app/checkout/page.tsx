@@ -6,6 +6,7 @@ import Link from "next/link"
 import { loadStripe } from "@stripe/stripe-js"
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js"
 import { startCheckoutSession } from "@/app/actions/stripe"
+import BackButton from "@/components/backButton"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "")
 
@@ -45,7 +46,7 @@ export default function CheckoutPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-card dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground">Setting up payment...</p>
         </div>
@@ -55,29 +56,24 @@ export default function CheckoutPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-card dark:bg-gray-900 flex items-center justify-center p-4">
         <div className="text-center max-w-md">
           <p className="text-destructive mb-4">{error}</p>
-          <Link href="/support/donate" className="text-primary hover:underline">
-            Back to Donation
-          </Link>
+          <BackButton label="Back"/>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="min-h-screen bg-card dark:bg-gray-900 py-12">
       <div className="max-w-2xl mx-auto px-4">
-        <Link href="/support/donate" className="text-primary hover:underline mb-6 inline-block">
-          ← Back to Donation
-        </Link>
-
+        <BackButton label="Back"/>
         <h1 className="text-4xl font-bold text-primary mb-2">Complete Your Donation</h1>
         <p className="text-foreground mb-8">Secure payment powered by Stripe</p>
 
         {clientSecret ? (
-          <div id="checkout" className="bg-card border border-border rounded-lg p-6">
+          <div id="checkout" className="bg-card dark:bg-gray-900 border border-border rounded-lg p-6">
             <EmbeddedCheckoutProvider
               stripe={stripePromise}
               options={{

@@ -1,37 +1,38 @@
 import Link from "next/link"
 import { ArrowRight, Hammer, BookOpen, Trophy } from "lucide-react"
+import IconRenderer from "./icon-renderer"
 
 export default function WhatWeStarting() {
   const programs = [
     {
       title: "Skills",
       description: "Vocational and creative development — Boys learning carpentry, mechanics, art, and design.",
-      image: "/boys-learning-carpentry-and-vocational-skills.jpg",
+      image: "https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764570530/freepik__realistic-ultra-high-resolution-photo-of-a-15-year__14040_ydyty9.png",
       href: "/programs/skills",
-      icon: Hammer,
+      icon: "https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617664/Skills_djsoom.svg",
     },
     {
       title: "Education",
-      description: "Mentorship and classroom initiatives — Basic literacy, after-school tutoring, leadership programs.",
-      image: "/students-in-classroom-learning-and-mentoring.jpg",
+      description: "Mentorship and classroom initiatives, Basic literacy, after-school tutoring, leadership programs.",
+      image: "https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764570537/Education_1_ju5myi.png",
       href: "/programs/education",
-      icon: BookOpen,
+      icon: "https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617633/Education_cwwvkm.svg",
     },
     {
       title: "Sports",
       description: "Physical and teamwork growth — Football, athletics, teamwork, and discipline.",
-      image: "/boys-playing-football-and-sports-teamwork.jpg",
+      image: "https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764925058/Football_1_fd9ljd.png",
       href: "/programs/sports",
-      icon: Trophy,
+      icon: "https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617632/Ball_Icon_shxgfx.svg",
     },
   ]
 
   return (
-    <section id="programs" className="bg-background dark:bg-gray-900 py-16 md:py-24 px-4">
+    <section id="programs" className="bg-card dark:bg-gray-900 py-10 md:py-24 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold  mb-4 text-center">What We're Starting With</h2>
-        <p className="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">
-          Our pilot programs are active in Lagos and within school clubs, impacting lives daily.
+        <h2 className="text-xl md:text-5xl font-bold  mb-4 text-center">What We're Starting With</h2>
+        <p className="text-center text-sm lg:text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">
+          We’re beginning our journey with three key focus areas designed to build a strong foundation for every boy we reach.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -52,7 +53,7 @@ export default function WhatWeStarting() {
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <Icon className="w-4 h-4 text-primary" />
+                    <IconRenderer icon={Icon} size={32} className="text-primary" />
                     <h3 className="text-xl font-bold text-foreground">{program.title}</h3>
                   </div>
                   <p className="text-muted-foreground text-sm mb-6">{program.description}</p>

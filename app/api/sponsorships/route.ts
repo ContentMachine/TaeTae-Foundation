@@ -1,76 +1,67 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { addRecord, getRecords } from "@/lib/db"
-import { sendEmail } from "@/lib/email"
+import { sendEmail, sendSponsorMatchEmail, sendSponsorshipEmail } from "@/lib/email"
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
 
-    // ✅ Validate required fields
-    if (!data.name || !data.email || !data.program || !data.amount) {
+    if (!data.name || !data.email || !data.totalAmount) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // ✅ Create sponsorship record
+    const sponsorshipId = `SPO-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
     const sponsorship = await addRecord("sponsorships", {
-      ...data,
+      id: sponsorshipId,
+      sponsorName: data.name,
+      sponsorEmail: data.email,
+      sponsorPhone: data.sponsorPhone,
+      company: data.company,
+      amount: data.totalAmount,
+      currency: data.currency,
+      paymentMethod:data.paymentMethod,
+      boyId: data.boyId,
+      rateUsed: data.rateUsed,
+      items: data.items ?? [],
+      status: data.status || "pending",
       createdAt: new Date().toISOString(),
-      status: "pending",
     })
 
-    console.log("🎉 Sponsorship created:", sponsorship)
+    console.log("🤝 Sponsorship received:", sponsorship)
 
-    // ✅ Send thank-you email to sponsor
-    if (data.email) {
-      await sendEmail(
-        data.email,
-        "Thank You for Sponsoring a Child 💖",
-        `
-          <h2>Hello ${data.name},</h2>
-          <p>Thank you for your generous sponsorship with <b>Tae tae Foundation</b>!</p>
-          <p>You have chosen to support our <b>${data.program}</b> program with an amount of <b>${data.currency || "USD"} ${data.amount}</b>.</p>
-          <p>Our team will review and confirm your sponsorship shortly.</p>
-          <br/>
-          <p>We deeply appreciate your compassion and support in empowering lives.</p>
-          <br/>
-          <p>Warm regards,</p>
-          <p><b>The Tae tae Foundation Team</b></p>
-        `
-      )
+    // If boy is assigned, send match email
+    if (data.boyId && data.status === "active") {
+      const boys = await getRecords("boys", { id: data.boyId })
+      if (boys && boys.length > 0) {
+        await sendSponsorMatchEmail(sponsorship, boys[0])
+      }
+    } else {
+      // Send thank you email
+      await sendSponsorshipEmail( sponsorship, data.email)
     }
 
-    // ✅ Notify admin (optional)
-    if (process.env.ADMIN_EMAIL) {
-      await sendEmail(
-        process.env.ADMIN_EMAIL,
-        "🎉 New Sponsorship Received",
-        `
-          <h2>New Sponsorship Alert</h2>
-          <p><b>${data.name}</b> has sponsored the <b>${data.program}</b> program.</p>
-          <ul>
-            <li><b>Email:</b> ${data.email}</li>
-            <li><b>Amount:</b> ${data.currency || "USD"} ${data.amount}</li>
-            <li><b>Message:</b> ${data.message || "—"}</li>
-          </ul>
-          <br/>
-          <p>Check your admin dashboard for details.</p>
-        `
-      )
-    }
-
-    return NextResponse.json({ success: true, sponsorship })
+    return NextResponse.json({ success: true, sponsorship, sponsorshipId })
   } catch (error) {
     console.error("❌ Sponsorship error:", error)
     return NextResponse.json({ error: "Failed to process sponsorship" }, { status: 500 })
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const sponsorships = await getRecords("sponsorships")
+    const { searchParams } = new URL(request.url)
+    const status = searchParams.get("status")
+    const commitmentLevel = searchParams.get("commitmentLevel")
+
+    let sponsorships = await getRecords("sponsorships")
+
+    if (status) sponsorships = sponsorships.filter((s: any) => s.status === status)
+    if (commitmentLevel) sponsorships = sponsorships.filter((s: any) => s.commitmentLevel === commitmentLevel)
+
     return NextResponse.json({ sponsorships, count: sponsorships.length })
   } catch (error) {
-    console.error(" Error fetching sponsorships:", error)
+    console.error("Error fetching sponsorships:", error)
     return NextResponse.json({ error: "Failed to fetch sponsorships" }, { status: 500 })
   }
 }

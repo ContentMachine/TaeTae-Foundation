@@ -1,21 +1,34 @@
+// middleware.ts
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
 
-  // Only protect admin routes, but skip the login page itself
-  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
-    const adminToken = request.cookies.get("admin_token")?.value
-
-    if (!adminToken) {
-      return NextResponse.redirect(new URL("/admin/login", request.url))
-    }
+  // Allow login page
+  if (pathname === "/login") {
+    return NextResponse.next()
   }
 
+  // Protect admin & volunteer routes
+  const needsAuth =
+    pathname.startsWith("/admin") || pathname.startsWith("/volunteer")
+
+  if (!needsAuth) {
+    return NextResponse.next()
+  }
+
+  const token = req.cookies.get("auth_token")?.value
+
+  // 🔐 Only check presence of cookie here
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url))
+  }
+
+  // ✅ DO NOT decode or verify JWT in middleware
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/volunteer/:path*"],
 }

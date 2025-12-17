@@ -1,57 +1,186 @@
 "use client"
 
 import Link from "next/link"
-import { ChevronRight, } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
+import { motion } from "framer-motion"
+import IconRenderer from "@/components/icon-renderer"
+import PublicImpactSection from "@/components/PublicImpactSection"
 
 export default function SupportPage() {
-  const options = [
-    {
-      title: "Donate",
-      description: "Make a direct financial contribution to support our programs.",
-      href: "/support/donate",
-      icon: "💰",
-    },
-    {
-      title: "Sponsor",
-      description: "Provide specific items our boys need to succeed.",
-      href: "/support/sponsor",
-      icon: "🛠️",
-    },
-    {
-      title: "Volunteer",
-      description: "Share your time and expertise to mentor boys directly.",
-      href: "/support/volunteer",
-      icon: "🙋",
-    },
-  ]
-
   return (
     <>
-    <Navigation />
-    <div className=" lg:pt-20 pt-12 dark:bg-gray-800">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold  mb-4">How You Can <span className="text-[#76b569] dark:text-[#8bc97f]">Support</span></h1>
-        <p className="text-foreground mb-12">Choose the way that works best for you.</p>
+      <Navigation />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {options.map((option, idx) => (
-            <Link key={idx} href={option.href}>
-              <div className="bg-whight dark:bg-gray-900 p-8 rounded-lg shadow-sm border border-border hover:border-primary transition cursor-pointer h-full">
-                <div className="text-5xl mb-4">{option.icon}</div>
-                <h2 className="text-2xl font-bold text-primary mb-2">{option.title}</h2>
-                <p className="text-foreground mb-6">{option.description}</p>
-                <div className="flex items-center text-primary font-semibold">
-                  Get Started <ChevronRight size={20} className="ml-2" />
-                </div>
-              </div>
-            </Link>
-          ))}
+      {/* HERO SECTION */}
+      <section className="container mx-auto px-4 pt-24 pb-12 ">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+          {/* LEFT CONTENT */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-2xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
+              How You Can{" "}
+              <span className="text-primary dark:text-[#8bc97f]">Support</span>
+            </h1>
+
+            <p className="lg:text-lg text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+              There are many ways to be part of our journey, donate, sponsor, or volunteer.
+              Each contribution directly impacts the boys we serve and the future we’re
+              shaping together.
+            </p>
+
+            <div className="flex gap-4">
+              {/* <Link
+                href="/support"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-[#5ea04e] text-white px-6 py-3 rounded-lg font-semibold transition"
+              >
+                Support a Cause
+                <ChevronRight className="w-4 h-4" />
+              </Link> */}
+
+              <Link
+                href="#support-options"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-[#5ea04e] text-white lg:px-6 lg:py-3 px-3 py-1 rounded-lg font-semibold transition"
+              >
+                Learn How
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* RIGHT IMAGE */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="rounded-2xl overflow-hidden hidden lg:block shadow-xl"
+          >
+            <img
+              src="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764570541/Carpentry_2_ceiql0.png"
+              alt="Support Illustration"
+              className="w-full h-[420px] object-cover"
+            />
+          </motion.div>
+
         </div>
-      </div>
-    </div>
-    <Footer />
+      </section>
+
+
+      {/* SUPPORT OPTIONS */}
+      <section id="support-options" className="bg-card dark:bg-gray-900 dark:bg-gray-900 container mx-auto px-4 py-12">
+        <div className=" mx-auto">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            {/* DONATE */}
+            <div className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-border hover:border-primary transition-all hover:shadow-lg">
+              <div className="relative h-64 overflow-hidden">
+                <img
+                  src="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764755445/Donate_1_ptppnd.png"
+                  alt="Donate"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <IconRenderer icon={'https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617721/Asset_29_cwxbbu.svg'} size={20} className="text-primary" />
+                  <h3 className="text-xl font-bold text-foreground">Donate</h3>
+                </div>
+
+                <p className="text-muted-foreground text-sm mb-6">
+                  Your generosity helps us build leaders for tomorrow. Choose a cause — Skills, Education, or Sports — and decide how you’d like to give.
+                </p>
+
+                <Link
+                  href="/support/donate"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition"
+                >
+                  Donate Now
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* SPONSOR */}
+            <div className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-border hover:border-primary transition-all hover:shadow-lg">
+              <div className="relative h-64 overflow-hidden">
+                <img
+                  src="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764755431/Sponsor_1_thsfwb.png"
+                  alt="Sponsor"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <IconRenderer icon={'https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617667/Sponsor_1_goyphq.svg'} size={20} className="text-primary" />
+                  <h3 className="text-xl font-bold text-foreground">Sponsor</h3>
+                </div>
+
+                <p className="text-muted-foreground text-sm mb-6">
+                  Sponsor tools, materials, or experiences. Each contribution directly supports a boy’s journey toward growth and independence.
+                </p>
+
+                <Link
+                  href="/support/sponsor"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition"
+                >
+                  Sponsor an Item
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* VOLUNTEER */}
+            <div className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-border hover:border-primary transition-all hover:shadow-lg">
+              <div className="relative h-64 overflow-hidden">
+                <img
+                  src="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764570531/Education_3_y4l5kp.jpg"
+                  alt="Volunteer"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <IconRenderer icon={'https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617618/Volunteer_izlode.svg'} size={20} className="text-primary" />
+                  <h3 className="text-xl font-bold text-foreground">Volunteer</h3>
+                </div>
+
+                <p className="text-muted-foreground text-sm mb-6">
+                  Join us as a professional mentor or helper. Be part of shaping confident, capable, responsible young men.
+                </p>
+
+                <Link
+                  href="/support/volunteer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition"
+                >
+                  Sign Up
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <section className="container mx-auto px-4 py-16">
+        <PublicImpactSection />
+      </section>
+
+
+      <Footer />
     </>
   )
 }

@@ -3,7 +3,7 @@ import { NewsList } from "@/components/news/news-list"
 import { NewsletterSignup } from "@/components/news/newsletter-signup"
 
 export const metadata = {
-  title: "Latest News - Tae tae Foundation",
+  title: "Latest News - TaeTae Foundation",
   description: "Stay updated with our latest stories, events, and impact in the community.",
 }
 

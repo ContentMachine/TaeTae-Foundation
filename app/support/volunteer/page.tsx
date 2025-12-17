@@ -1,9 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
+import IconRenderer from "@/components/icon-renderer"
+import BackButton from "@/components/backButton"
 
 export default function VolunteerPage() {
   const [step, setStep] = useState(1)
@@ -16,12 +17,26 @@ export default function VolunteerPage() {
     location: "",
     bio: "",
     availability: "weekly",
+    profile_photo_base64: "" // Added for image upload
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Handle input change for text fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  // Handle file input for image upload
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, profile_photo_base64: reader.result as string }))
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,6 +63,7 @@ export default function VolunteerPage() {
           location: "",
           bio: "",
           availability: "weekly",
+          profile_photo_base64: "", // Clear image after submission
         })
         setStep(1)
         setCategory(null)
@@ -61,32 +77,76 @@ export default function VolunteerPage() {
   }
 
   return (
-    <div className="max-w-2xl  mx-auto px-4 py-12">
-      <Link href="/support" className=" hover:underline mb-4 inline-block">
-        ← Back to Support
-      </Link>
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="mb-6 flex items-center justify-between gap-4">
+        {/* LOGO */}
+        <Link
+          href="/"
+          className="flex p-1 rounded-full bg-white border dark:border-white dark:bg-gray-900 items-center"
+        >
+          {/* Logo for light mode */}
+          <img
+            src="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764783363/Tae_Tae_2_a52zrp.svg"
+            alt="TaeTae Foundation Logo"
+            className="md:h-10 h-8 pr-1 w-auto dark:hidden"  // This will hide in dark mode
+          />
+          
+          {/* Logo for dark mode */}
+          <img
+            src="/Tae-Tae-logo.png"
+            alt="TaeTae Foundation Logo"
+            className="md:h-10 h-8 pr-1 w-auto hidden dark:block"  // This will show only in dark mode
+          />
+        </Link>
+        <BackButton label="Back"/>
+      </div>
 
-      <h1 className="text-4xl font-bold  mb-4">Volunteer with <span className="text-primary dark:text-[#8bc97f]">Us</span></h1>
-      {/* <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">"You are a star, if not for you volunteers, where would we be?"</p> */}
+      <h1 className="text-4xl font-bold mb-4">Volunteer with <span className="text-primary dark:text-[#8bc97f]">Us</span></h1>
       <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">Join our community of mentors and helpers who are changing boys' lives.</p>
 
       {step === 1 && !category && (
         <div className="space-y-6">
-          <p className="text-primary mb-4">Choose your volunteer category:</p>
+          <div className=" flex items-center justify-between gap-4">
+            <p className="text-primary mb-4">Choose your volunteer category:</p>
+            <Link
+              href="/login"
+              className="text-primary mb-4"
+            >
+              I have an account
+          </Link>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* PROFESSIONAL */}
             <button
               onClick={() => setCategory("professional")}
               className="p-8 border-2 border-border bg-white dark:bg-gray-900 rounded-lg hover:border-primary transition text-center"
             >
-              <div className="text-4xl mb-3">💼</div>
+              <div className="flex justify-center mb-4">
+                <IconRenderer
+                  icon="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617681/Growth_dob1dn.svg"
+                  size={48}
+                  className="text-primary"
+                />
+              </div>
+
               <h3 className="text-xl font-bold text-primary mb-2">Professional</h3>
               <p className="text-sm text-foreground">Share your expertise and skills</p>
             </button>
+
+            {/* HELPER */}
             <button
               onClick={() => setCategory("helper")}
-              className="p-8 border-2 border-border bg-white dark:bg-gray-900  rounded-lg hover:border-primary transition text-center"
+              className="p-8 border-2 border-border bg-white dark:bg-gray-900 rounded-lg hover:border-primary transition text-center"
             >
-              <div className="text-4xl mb-3">🙋</div>
+              <div className="flex justify-center mb-4">
+                <IconRenderer
+                  icon="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617580/Team_Bonding_chitrp.svg"
+                  size={40}
+                  className="text-primary"
+                />
+              </div>
+
               <h3 className="text-xl font-bold text-primary mb-2">Helper</h3>
               <p className="text-sm text-foreground">Support through mentoring and guidance</p>
             </button>
@@ -200,6 +260,16 @@ export default function VolunteerPage() {
               <option value="monthly">Monthly</option>
               <option value="flexible">Flexible</option>
             </select>
+          </div>
+
+          <div>
+            <label className="block text-foreground font-semibold mb-2">Profile Photo (Optional)</label>
+            <input
+              type="file"
+              onChange={handleImageChange}
+              accept="image/*"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            />
           </div>
 
           <button

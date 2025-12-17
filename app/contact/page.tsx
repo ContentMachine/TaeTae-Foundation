@@ -3,7 +3,7 @@ import { ContactForm } from "@/components/contact/contact-form"
 import { ContactInfo } from "@/components/contact/contact-info"
 
 export const metadata = {
-  title: "Contact Us - Tae tae Foundation",
+  title: "Contact Us - TaeTae Foundation",
   description: "Get in touch with us to learn more about our programs or how you can help.",
 }
 

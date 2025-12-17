@@ -5,6 +5,8 @@ import type React from "react"
 import { useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
+import IconRenderer from "@/components/icon-renderer"
+import BackButton from "@/components/backButton"
 
 function DonateContent() {
   const searchParams = useSearchParams()
@@ -20,7 +22,20 @@ function DonateContent() {
   const [email, setEmail] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const programs = ["Skills", "Education", "Sports"]
+  const programs = [
+    { 
+      name: "Skills", 
+      icon: 'https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617664/Skills_djsoom.svg'
+    },
+    { 
+      name: "Education", 
+      icon: 'https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617633/Education_cwwvkm.svg'
+    },
+    { 
+      name: "Sports", 
+      icon: 'https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764617632/Ball_Icon_shxgfx.svg'
+    },
+]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,11 +74,30 @@ function DonateContent() {
 
   return (
     <div className="max-w-2xl min-h-screen dark:bg-gray-900 mx-auto px-4 py-12">
-      <Link href="/support" className="text-primary hover:underline mb-4 inline-block">
-        ← Back to Support
-      </Link>
+      <div className="mb-6 flex items-center justify-between gap-4">
+        {/* LOGO */}
+        <Link
+          href="/"
+          className="flex p-1 bg-white border dark:border-white dark:bg-gray-900 rounded-full  items-center"
+        >
+          {/* Logo for light mode */}
+          <img
+            src="https://res.cloudinary.com/dzn1k1z8r/image/upload/v1764783363/Tae_Tae_2_a52zrp.svg"
+            alt="TaeTae Foundation Logo"
+            className="md:h-10 pr-1 h-8 w-auto dark:hidden"  // This will hide in dark mode
+          />
+          
+          {/* Logo for dark mode */}
+          <img
+            src="/Tae-Tae-logo.png"
+            alt="TaeTae Foundation Logo"
+            className="md:h-10 pr-1 h-8 w-auto hidden dark:block"  // This will show only in dark mode
+          />
+        </Link>
+        <BackButton label="Back"/>
+      </div>
 
-      <h1 className="text-4xl font-bold text-primary mb-2">Make a Donation</h1>
+      <h1 className="text-4xl font-bold text-primar mb-2">Make a <span className="text-primary dark:text-[#8bc97f]">Donation</span></h1>
       <p className="text-foreground mb-8">Your generosity changes lives. Choose where your impact matters most.</p>
 
       {/* Step Indicator */}
@@ -81,18 +115,22 @@ function DonateContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {programs.map((prog) => (
                 <button
-                  key={prog}
+                  key={prog.name}
                   type="button"
-                  onClick={() => setSelectedProgram(prog.toLowerCase())}
+                  onClick={() => setSelectedProgram(prog.name.toLowerCase())}
                   className={`p-4 rounded-lg border-2 transition ${
-                    selectedProgram === prog.toLowerCase()
+                    selectedProgram === prog.name.toLowerCase()
                       ? "border-primary bg-primary/5"
                       : "border-border hover:border-primary"
                   }`}
                 >
-                  <div className="font-bold text-primary">{prog}</div>
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <IconRenderer icon={prog.icon} size={16} className="text-primary" />
+                    <div className="font-bold text-primary">{prog.name}</div>
+                  </div>
                   <div className="text-sm text-foreground">Select this program</div>
                 </button>
+
               ))}
             </div>
             <button

@@ -9,11 +9,31 @@ export interface Cause {
 }
 
 export interface Volunteer {
-  id: string
-  name: string
-  title: string
-  image: string
-  bio?: string
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  bio:string;
+  category: string;
+  status: "pending" | "approved" | "rejected";
+  profile_photo_url?: string;
+  location?: string;
+  skills?: string[];
+  learning?: string[];
+  experience?: string;
+  availability?: string;
+  background?: string;
+  motivation?: string;
+  createdAt?: string;
+  occupation?:string;
+  approvedAt?: string;
+  assignedBoys?: number;
+  hoursContributed?: number;
+  emergencyContact?: string;
+  emergencyPhone?: string;
+  certifications?: string[];
+  languages?: string[];
+  preferredAge?: string;
 }
 
 export interface Testimonial {

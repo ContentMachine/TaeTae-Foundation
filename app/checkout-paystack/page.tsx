@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import Link from "next/link"
 import { startPaystackTransaction } from "@/app/actions/paystack"
+import BackButton from "@/components/backButton"
 
 export default function CheckoutPaystackPage() {
   const searchParams = useSearchParams()
@@ -40,16 +41,13 @@ export default function CheckoutPaystackPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="min-h-screen bg-card dark:bg-gray-900 py-12">
       <div className="max-w-2xl mx-auto px-4">
-        <Link href="/support/donate" className="text-primary hover:underline mb-6 inline-block">
-          ← Back to Donation
-        </Link>
-
+        <BackButton label="Back"/>
         <h1 className="text-4xl font-bold text-primary mb-2">Complete Your Donation</h1>
         <p className="text-foreground mb-8">Secure payment powered by Paystack</p>
 
-        <div className="bg-card border border-border rounded-lg p-8 space-y-6">
+        <div className="bg-card dark:bg-gray-900 border border-border rounded-lg p-8 space-y-6">
           <div className="space-y-4">
             <h2 className="font-semibold text-foreground">Donation Summary</h2>
             <div className="space-y-2 text-sm">

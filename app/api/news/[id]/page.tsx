@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   }
 
   return {
-    title: `${blog.title} - Tae tae Foundation`,
+    title: `${blog.title} - TaeTae Foundation`,
     description: blog.excerpt,
   }
 }

@@ -36,33 +36,116 @@ export interface Volunteer {
 export interface Boy {
   _id?: string
   id: string
-  firstName: string
-  lastName: string
-  dateOfBirth: string
-  email?: string
-  phone?: string
-  guardianName: string
-  guardianPhone: string
-  guardianEmail: string
-  programs: string[]
-  skillsLevel: number
-  educationScore: number
-  athleticAbility: number
-  totalScore: number
-  sponsor?: {
-    id: string
-    name: string
-  } | null
-  joinedDate: string
-  lastUpdated: string
-  achievements?: string[]
-  growthHistory?: Array<{
-    date: string
-    skillsLevel?: number
-    educationScore?: number
-    athleticAbility?: number
-  }>
+
+  // Basic Info
+  first_name: string
+  last_name: string
+  date_of_birth: string
+  age_at_enrolment?: number
+
+  // Program Info
+  program_start_date?: string
+  program_track: "skills_only" | "sports_only" | "mixed"
+
+  // School Info
+  school_name?: string
+  class_level?: string
+
+  // Guardian Info
+  guardian_name: string
+  sponsor_name?: string
+  guardian_phone: string
+  guardian_email: string
+
+  // Address
+  address_city?: string
+  address_country?: string
+
+  // Emergency Contact
+  emergency_contact?: string | { name: string; phone: string }
+
+  // Status
+  status: "active" | "graduated" | "paused" | "dropped"
+  consent_form_signed: boolean
+
+  // Metadata
+  profile_photo_url?: string
+  notes?: string
+  background?: string
+  goals?: string
+  createdAt?: string
+  updatedAt?: string
+  guardian_signature_url: String,
+
+  // ⭐ Added Data From All Other Interfaces ⭐
+
+  physical_assessments?: PhysicalAssessment[]
+  cognitive_assessments?: CognitiveAssessment[]
+  skills?: Skill[]
+  skill_sessions?: SkillSession[]
 }
+
+export interface PhysicalAssessment {
+  _id?: string
+  id?: string
+  boy_id: string
+  assessment_date: string
+  height_cm?: number
+  weight_kg?: number
+  bmi?: number
+  resting_heart_rate?: number
+  pushups_count?: number
+  situps_count?: number
+  shuttle_run_time?: number
+  coach_comment?: string
+  assessment_source: "baseline" | "midterm" | "endline" | "regular_check"
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface CognitiveAssessment {
+  _id?: string
+  id?: string
+  boy_id: string
+  assessment_date: string
+  reading_level?: "below_grade" | "at_grade" | "above_grade"
+  numeracy_level?: "below_grade" | "at_grade" | "above_grade"
+  attention_focus_score?: number
+  memory_score?: number
+  problem_solving_score?: number
+  school_exam_average?: number
+  teacher_comment?: string
+  assessment_source: "teacher_report" | "test" | "observation"
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface Skill {
+  _id?: string
+  id?: string
+  name: string
+  pillar: "skills" | "sports" | "education"
+  description?: string
+  level_structure?: string | Record<string, any>
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface SkillSession {
+  _id?: string
+  id?: string
+  enrolment_id: string
+  session_date: string
+  hours: number
+  topic: string
+  attendance_status: "present" | "absent" | "late"
+  performance_rating?: number
+  mentor_comment?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+
 
 export interface Sponsorship {
   _id?: string
@@ -75,7 +158,12 @@ export interface Sponsorship {
   amount: number
   currency: "USD" | "NGN"
   boyId?: string
-  items?: string[]
+  paymentMethod: "stripe" | "paystack"
+  rateUsed?: number
+  items: {
+    id: string
+    quantity: number
+  }[]
   status: "pending" | "active" | "completed"
   createdAt: string
   updatedAt?: string

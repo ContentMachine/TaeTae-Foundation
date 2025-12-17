@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
           <p>We truly appreciate your support and commitment to changing lives.</p>
           <br/>
           <p>Warm regards,</p>
-          <p><b>The Tae tae Foundation Team</b></p>
+          <p><b>The TaeTae Foundation Team</b></p>
         `
       )
     }

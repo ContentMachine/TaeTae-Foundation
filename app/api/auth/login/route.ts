@@ -1,0 +1,37 @@
+// app/api/auth/login/route.ts
+import { NextResponse } from "next/server"
+import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs"
+import { findUserByEmail } from "@/lib/auth"
+
+export async function POST(req: Request) {
+  const { email, password } = await req.json()
+
+  const user = await findUserByEmail(email)
+  if (!user) {
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
+  }
+
+  const valid = bcrypt.compareSync(password, user.password)
+  if (!valid) {
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
+  }
+
+  const token = jwt.sign(
+    { id: user.id, role: user.role, email: user.email, volunteerId: user.volunteerId },
+    process.env.JWT_SECRET!,
+    { expiresIn: "24h" }
+  )
+
+  const res = NextResponse.json({ success: true, role: user.role, id:user.id , volunteerId: user.volunteerId })
+
+  res.cookies.set("auth_token", token, {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+  })
+
+  return res
+}

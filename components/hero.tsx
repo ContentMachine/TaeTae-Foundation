@@ -14,9 +14,9 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative flex items-center overflow-hidden bg-linear-to-br from-[#76b569]/10 via-white to-[#76b569]/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <section className="relative flex items-center overflow-hidden bg-linear-to-br from-primary/10 via-white to-primary/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <video autoPlay loop muted playsInline className="absolute w-full h-full object-cover">
-        <source src="https://res.cloudinary.com/dgo6onisg/video/upload/v1762632280/5416571_Coll_wavebreak_People_1280x720_zg90gf.mp4" type="video/mp4" />
+        <source src="https://res.cloudinary.com/dzn1k1z8r/video/upload/v1764880315/Web_Banner_TaeTae_uxmbfw.mp4" type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/60 z-0" />
       <div className="container mx-auto px-4 lg:pt-28 lg:pb-10 pt-20 pb-8 relative z-10">
@@ -29,7 +29,7 @@ export default function Hero() {
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               Building Tomorrow's{" "}
-              <span className="text-[#76b569] dark:text-[#8bc97f] relative">
+              <span className="text-primary dark:text-[#8bc97f] relative">
                 Leaders
                 <svg
                   className="absolute -bottom-2 left-0 w-full"
@@ -43,7 +43,7 @@ export default function Hero() {
                     stroke="currentColor"
                     strokeWidth="3"
                     strokeLinecap="round"
-                    className="text-[#76b569] dark:text-[#8bc97f]"
+                    className="text-primary dark:text-[#8bc97f]"
                   />
                 </svg>
               </span>
@@ -57,7 +57,7 @@ export default function Hero() {
               <Button
                 size="lg"
                 onClick={() => (window.location.href = "/support")}
-                className="bg-[#76b569] hover:bg-[#5a8d4f] dark:bg-[#8bc97f] dark:hover:bg-[#76b569] text-white px-8 py-6 text-lg group"
+                className="bg-primary hover:bg-primary-dark dark:bg-[#8bc97f] dark:hover:bg-primary text-white px-8 py-6 text-lg group"
               >
                 Make a Difference
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -66,7 +66,7 @@ export default function Hero() {
                 size="lg"
                 variant="outline"
                 onClick={scrollToPrograms}
-                className="border-[#76b569] text-[#76b569] dark:border-[#8bc97f] dark:text-[#8bc97f] hover:bg-[#e8f5e6] dark:hover:bg-gray-800 px-8 py-6 text-lg bg-transparent"
+                className="border-primary text-primary dark:border-[#8bc97f] dark:text-[#8bc97f] hover:bg-secondary dark:hover:bg-gray-800 px-8 py-6 text-lg bg-transparent"
               >
                 Our Programs
               </Button>
@@ -98,7 +98,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl max-w-[200px]"
             >
-              <Heart className="text-[#76b569] dark:text-[#8bc97f] mb-2" size={32} />
+              <Heart className="text-primary dark:text-[#8bc97f] mb-2" size={32} />
               <div className="text-2xl font-bold text-gray-900 dark:text-white">1000+</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Lives Touched</div>
             </motion.div>
@@ -107,7 +107,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="absolute -top-6 -right-6 bg-[#76b569] dark:bg-[#8bc97f] p-6 rounded-xl shadow-xl max-w-[200px]"
+              className="absolute -top-6 -right-6 bg-primary dark:bg-[#8bc97f] p-6 rounded-xl shadow-xl max-w-[200px]"
             >
               <Target className="text-white mb-2" size={32} />
               <div className="text-2xl font-bold text-white">95%</div>

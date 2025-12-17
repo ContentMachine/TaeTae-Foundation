@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { TrendingUp, Award, Heart, Zap, Home } from "lucide-react"
+import BackButton from "@/components/backButton"
 
 interface Boy {
   id: string
@@ -44,29 +45,24 @@ export default function SponsorDashboard() {
   }, [params.id])
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
+    return <div className="min-h-screen bg-card dark:bg-gray-900 flex items-center justify-center">Loading...</div>
   }
 
   if (!boy) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-card dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <p className="text-foreground mb-4">Boy not found</p>
-          <Link href="/" className="text-primary hover:underline">
-            Back to Home
-          </Link>
+          <BackButton label="Back"/>
         </div>
       </div>
     )
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-card dark:bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 py-12">
-        <Link href="/" className="flex items-center gap-2 text-primary hover:underline mb-8">
-          <Home className="w-4 h-4" />
-          Back to Home
-        </Link>
+       <BackButton label="Back"/>
 
         <div className="bg-linear-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-lg p-8 mb-8">
           <h1 className="text-4xl font-bold text-primary flex items-center gap-3 mb-4">
@@ -77,7 +73,7 @@ export default function SponsorDashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-card border border-border rounded-lg p-6">
+          <div className="bg-card dark:bg-gray-900 border border-border rounded-lg p-6">
             <h2 className="text-2xl font-bold text-foreground mb-4">{boy.fullName}</h2>
             <div className="space-y-3">
               <div>
@@ -91,7 +87,7 @@ export default function SponsorDashboard() {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-lg p-6">
+          <div className="bg-card dark:bg-gray-900 border border-border rounded-lg p-6">
             <h2 className="text-lg font-bold text-foreground mb-4">About Him</h2>
             <div className="space-y-2 text-sm">
               <div>
@@ -106,7 +102,7 @@ export default function SponsorDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-8">
+        <div className="bg-card dark:bg-gray-900 border border-border rounded-lg p-8">
           <h2 className="text-2xl font-bold text-primary flex items-center gap-3 mb-6">
             <TrendingUp className="w-6 h-6" />
             Growth Progress

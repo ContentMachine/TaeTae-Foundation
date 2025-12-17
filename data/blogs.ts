@@ -7,7 +7,7 @@ export const blogs: BlogPost[] = [
     excerpt: "Discover how volunteering shapes communities and creates lasting impact in the lives of young people.",
     content: "Volunteering is more than just giving time; it is about building a stronger, more connected society...",
     image: "/volunteers-working-with-youth.jpg",
-    author: "Tae tae Foundation",
+    author: "TaeTae Foundation",
     date: "2025-01-15",
     category: "Community",
   },

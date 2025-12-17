@@ -1,47 +1,83 @@
-// Authentication utility functions for admin system
-const ADMIN_TOKEN_KEY = "admin_token"
-const TOKEN_EXPIRY = 24 * 60 * 60 * 1000 // 24 hours
+// lib/auth.ts
+import bcrypt from "bcryptjs"
+import { ObjectId } from "mongodb"
+import { getCollection } from "./mongodb"
 
-interface AdminCredentials {
+export interface User {
+  _id?: ObjectId
+  id: string
   email: string
-  password: string
+  password: string // hashed
+  role: "admin" | "volunteer"
+  resetOTP?: string
+  volunteerId?:string
+  resetExpiry?: number
+  createdAt: string
 }
 
-const VALID_CREDENTIALS: AdminCredentials = {
-  email: "admin@taetae.org",
-  password: "TaeTae2025",
+export async function findUserByEmail(email: string) {
+  const users = await getCollection("users")
+  return users.findOne({ email })
 }
 
-export function validateCredentials(email: string, password: string): boolean {
-  return email === VALID_CREDENTIALS.email && password === VALID_CREDENTIALS.password
-}
+export async function createUser(
+  email: string,
+  password: string,
+  role: "admin" | "volunteer",
+  volunteerId?:string
+) {
+  const users = await getCollection("users")
 
-export function createAuthToken(): string {
-  return `demo_token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-}
+  const exists = await users.findOne({ email })
+  if (exists) throw new Error("User already exists")
 
-export function setAuthCookie(token: string): void {
-  const expiryDate = new Date()
-  expiryDate.setTime(expiryDate.getTime() + TOKEN_EXPIRY)
-  document.cookie = `${ADMIN_TOKEN_KEY}=${token}; path=/; expires=${expiryDate.toUTCString()}; SameSite=Lax`
-}
+  const hashed = bcrypt.hashSync(password, 10)
+  const newId = new ObjectId()
 
-export function clearAuthCookie(): void {
-  document.cookie = `${ADMIN_TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`
-}
-
-export function getAuthToken(): string | null {
-  if (typeof document === "undefined") return null
-  const cookies = document.cookie.split(";")
-  for (const cookie of cookies) {
-    const [key, value] = cookie.trim().split("=")
-    if (key === ADMIN_TOKEN_KEY) {
-      return value
-    }
+  const user: User = {
+    _id: newId,
+    id: newId.toString(),
+    email,
+    password: hashed,
+    role,
+    volunteerId,
+    createdAt: new Date().toISOString(),
   }
-  return null
+
+  await users.insertOne(user)
+  return user
 }
 
-export function isAuthTokenValid(): boolean {
-  return getAuthToken() !== null && getAuthToken() !== ""
+export async function setResetOTP(email: string, otp: string) {
+  const users = await getCollection("users")
+  return users.updateOne(
+    { email },
+    {
+      $set: {
+        resetOTP: otp,
+        resetExpiry: Date.now() + 5 * 60 * 1000, // 5 mins
+      },
+    }
+  )
+}
+
+export async function verifyOTP(email: string, otp: string) {
+  const users = await getCollection("users")
+  const user = await users.findOne({
+    email,
+    resetOTP: otp,
+    resetExpiry: { $gt: Date.now() },
+  })
+  return user
+}
+
+export async function updatePassword(email: string, newHashedPassword: string) {
+  const users = await getCollection("users")
+  return users.updateOne(
+    { email },
+    {
+      $set: { password: newHashedPassword },
+      $unset: { resetOTP: "", resetExpiry: "" },
+    }
+  )
 }

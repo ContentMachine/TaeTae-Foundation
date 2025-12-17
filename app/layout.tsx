@@ -6,6 +6,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
+import { ToastContainer } from "react-toastify"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -31,14 +32,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          
-          <div className="min-h-screen dark:bg-gray-800 ">
-            {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <div className="min-h-screen dark:bg-gray-800">
+            {children} {/* This will render the page content */}
           </div>
           <Analytics />
         </ThemeProvider>
+
+        {/* Toast Container for showing toast notifications */}
+        <ToastContainer
+          position="top-right"  // Set your preferred position
+          autoClose={5000}       // Toast will close after 5 seconds
+          hideProgressBar={false}  // Show progress bar (optional)
+          newestOnTop={false}     // Display newest on top (optional)
+          closeOnClick={true}     // Close on click (optional)
+          rtl={false}             // Right to left text direction (optional)
+        />
       </body>
     </html>
   )

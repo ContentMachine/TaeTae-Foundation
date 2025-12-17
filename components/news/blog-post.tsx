@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Calendar, User, ArrowLeft, Share2 } from "lucide-react"
 import type { BlogPost as BlogPostType } from "@/lib/types"
+import BackButton from "../backButton"
 
 interface BlogPostProps {
   blog: BlogPostType
@@ -32,12 +33,7 @@ export function BlogPost({ blog }: BlogPostProps) {
             transition={{ duration: 0.6 }}
             className="max-w-4xl"
           >
-            <Link href="/news">
-              <Button variant="ghost" className="text-white hover:text-white/80 mb-6 -ml-4">
-                <ArrowLeft className="mr-2" />
-                Back to News
-              </Button>
-            </Link>
+            <BackButton label="Back"/>
             <div className="flex items-center gap-4 mb-4">
               <span className="px-4 py-2 bg-[#4A90E2] text-white rounded-full text-sm font-semibold">
                 {blog.category}
@@ -72,7 +68,7 @@ export function BlogPost({ blog }: BlogPostProps) {
               <div className="text-gray-700 leading-relaxed space-y-6">
                 <p>{blog.content}</p>
                 <p>
-                  At Tae tae Foundation, we believe that volunteering is not just about giving time—it's about building
+                  At TaeTae Foundation, we believe that volunteering is not just about giving time—it's about building
                   connections, fostering growth, and creating lasting change in our communities. Through our volunteer
                   programs, we've seen firsthand how dedicated individuals can transform the lives of young boys.
                 </p>
